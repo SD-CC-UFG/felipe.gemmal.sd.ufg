@@ -4,13 +4,11 @@ import socket, string
 import sys
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+servico = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 ip = 'localhost'
-porta = 12343
+porta = 12344
 
 server.connect((ip,porta))
-
-#socket que ira conectar no serviço
-#servico = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
 while True:
@@ -32,23 +30,22 @@ while True:
 		sexo = raw_input()
 		dados = altura+" "+sexo
 
-	server.send(opcao+" "+dados)
+	server.send(opcao)
 
-	# enviar apenas qual o serviço desejado para o serviço de nomes
-	#server.send(opcao)
 	print("Esperando resposta:")
-	mensagem = server.recv(1024)
+	mensagem = str(server.recv(1024).decode('utf-8')).split()
 
-	#conectar o socket nesse serviço
-	#mensagem = str(server.recv(1024).decode('utf-8')).split())
-	#servico.connect((mensagem[0],mensagem[1]))
-
-	#resposta =servico.send(dados)
-
-	print("Resposta:")
 	print(mensagem)
 
-	#mostrar na tela a resposta
-	#print(resposta)
+
+	print("Conectando no servidor de servico:")
+	servico.connect((mensagem[0],mensagem[1]))
+
+	print("Enviando dados")
+	servico.send(dados)
+
+	resposta = str(servico.recv(1024).decode('utf-8')).split()
+	print("Resposta:")
+	print(resposta[0])
 
 server.close()
