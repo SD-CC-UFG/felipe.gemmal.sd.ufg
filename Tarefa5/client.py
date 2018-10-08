@@ -1,5 +1,6 @@
 #Cliente basico acesso indireto de Felipe Gemmal
-
+# -*- coding: utf-8 -*-
+import os
 import socket, string
 import sys
 
@@ -32,6 +33,8 @@ while True:
 
 	server.send(opcao)
 
+	os.system('clear')
+	
 	print("Esperando resposta:")
 	mensagem = str(server.recv(1024).decode('utf-8')).split()
 
@@ -39,7 +42,7 @@ while True:
 
 
 	print("Conectando no servidor de servico:")
-	servico.connect((mensagem[0],mensagem[1]))
+	servico.connect((mensagem[0],int(mensagem[1]) ))
 
 	print("Enviando dados")
 	servico.send(dados)
@@ -47,5 +50,7 @@ while True:
 	resposta = str(servico.recv(1024).decode('utf-8')).split()
 	print("Resposta:")
 	print(resposta[0])
+	
+	servico.close()
 
 server.close()

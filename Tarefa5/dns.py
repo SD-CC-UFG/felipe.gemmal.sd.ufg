@@ -1,5 +1,5 @@
 #Servidor intermediario para acesso indireto de Felipe Gemmal
-
+# -*- coding: utf-8 -*-
 import socket
 import sys
 import threading
