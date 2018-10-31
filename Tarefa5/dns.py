@@ -5,13 +5,15 @@ import sys
 import threading
 
 
-names = {"1":"12391", "2":"12392", "3":"12393"}
+names = {"1":('localhost',"12391"), "2":('localhost',"12392"), "3":('localhost',"12393")}
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 ip = 'localhost'
 porta = 12345
 
+midIp = 'localhost'
+midPorta = 12388
 
 
 def cliente(connection,porta):
@@ -23,31 +25,6 @@ def cliente(connection,porta):
 		print("Sem dados")
 		return
 
-		#conexao = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		#entrada = int(direcao[0]) + porta
-		
-		#if int(direcao[0]) == 1:
-		#	dados = direcao[1]
-
-		#elif int(direcao[0]) == 2:
-		#	sexo = direcao[1]
-		#	idade = direcao[2]
-		#	dados = sexo +" "+idade
-		#else:
-		#	altura = direcao[1]
-		#	sexo = direcao[2]
-		#	dados = altura+" "+sexo
-
-
-		#conexao.connect(("localhost",entrada))
-
-		#print("O valor da entrada eh:")
-		#print(entrada)
-	
-		#conexao.send(dados)
-		#resposta = conexao.recv(1024)
-
-		#resposta = "localhost"+" "+direcao[0]
 	print(nomeServico)
 	endereco = names.get(nomeServico,-1)
 	
@@ -62,7 +39,7 @@ def cliente(connection,porta):
 	return
 
 
-def newService(connection,cliente):
+def addService(connection,cliente):
 	print("Thread criada")
 	novoServico= str(connection.recv(1024).decode('utf-8')).split(" ")
 	
@@ -79,7 +56,30 @@ def newService(connection,cliente):
 	
 	return
 
+def connectMiddleware(ip,porta,minhaPorta):
+	
+	middle = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	middle.connect((ip,porta))
 
+	middle.send("addAddress")
+
+	resposta =str(middle.recv(1024).decode('utf-8'))
+
+	print(resposta)	
+
+	middle.send(str(minhaPorta) )
+
+	resposta = str(middle.recv(1024).decode('utf-8'))
+
+	print(resposta)
+
+	middle.close()
+	return
+
+
+
+
+connectMiddleware(midIp,midPorta,porta)
 
 server.bind((ip,porta))
 server.listen(10)
@@ -89,7 +89,7 @@ while True:
 	
 	co,endCliente = server.accept()
 	print("Conexao aceita")
-
+	
 	tipo= str(co.recv(1024).decode('utf-8'))
 
 	print(tipo +' Criando thread')
@@ -97,8 +97,8 @@ while True:
 		linha = threading.Thread(target=cliente,args=(co,porta))
 		linha.start()
 
-	elif(tipo == 'addservice'):
-		linha = threading.Thread(target=newService,args=(co,endCliente))
+	elif(tipo == 'addService'):
+		linha = threading.Thread(target=addService,args=(co,endCliente))
 		linha.start()
 	
 
