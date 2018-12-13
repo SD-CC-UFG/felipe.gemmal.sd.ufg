@@ -2,4 +2,6 @@
 
 Trabalho final da disciplina Sistemas Distribuidos 2018-2
 
-Alunos: Felipe Gemmal e Carlos Rorato
+Alunos: Felipe Almeida de Carvalho Gemmal e Carlos Henrique Sousa Rorato
+
+
